@@ -12,7 +12,7 @@ const PROFILE = {
   handle: "KopalliAditya (GitHub) · akopalli (internal)",
   githubUrl: "https://github.com/KopalliAditya",
   tagline:
-    "Health Cloud, integration & applied-AI engineering — HL7/MuleSoft referral pipelines, predictive CSR scoring, intelligent appointments, and Agentforce.",
+    "Health Cloud, integration & applied-AI engineering — MuleSoft referral pipelines, predictive CSR scoring, intelligent appointments, and Agentforce.",
 };
 
 /* Verified from GUS: 173 total work items (89 bugs, 84 user stories), 143 closed/fixed. */
@@ -30,7 +30,7 @@ const AREAS = [
     label: "Overview",
     icon: "◆",
     blurb:
-      "A living record of the Salesforce work I've shipped and prototyped, organized by domain. Each item has a low-level design, a test plan, and the setup needed to reproduce it. Top product areas by work-item volume: Patient Access (53), Intelligent Appointment Management (9), HC HL7 Adapter, and trust/sustaining across HC Rebels & R2D2.",
+      "A living record of the Salesforce work I've shipped and prototyped, organized by domain. Each item has a low-level design, a test plan, and the setup needed to reproduce it. Top product areas by work-item volume: Patient Access (53), Intelligent Appointment Management (9), HC integration adapter, and trust/sustaining across HC Rebels & R2D2.",
     items: [],
   },
 
@@ -142,22 +142,22 @@ const AREAS = [
     label: "MuleSoft",
     icon: "⬡",
     blurb:
-      "The EHR HL7 Referral Connector — a MuleSoft listener that turns inbound HL7 ORM orders into Health Cloud Clinical Service Requests. The connector, its auth, de-dup, packaging, and the long tail of platform quirks it took to get a listener to RUNNING.",
+      "MuleSoft referral pipelines — a listener that turns inbound EMR orders into Health Cloud Clinical Service Requests. The pipeline, its auth, de-dup, packaging, and the long tail of platform quirks it took to get a listener to RUNNING.",
     items: [
       {
-        title: "HL7 Referral Listener (ORM) — create CSR + Patient",
+        title: "Referral intake pipeline (ORM) — create CSR + Patient",
         status: "Fixed",
         summary:
-          "The core connector: an inbound HL7 ORM listener that creates a ClinicalServiceRequest (and Patient) in Health Cloud. Validated across endpoints and packaged for deploy.",
-        tags: ["HL7", "ORM", "CloudHub", "CSR"],
+          "The core pipeline: an inbound order listener that creates a ClinicalServiceRequest (and Patient) in Health Cloud. Validated across endpoints and packaged for deploy.",
+        tags: ["Pipeline", "ORM", "CloudHub", "CSR"],
         lld: [
-          "Listener ingests HL7 ORM messages and creates CSR + Patient records in the org.",
+          "Listener ingests inbound EMR orders and creates CSR + Patient records in the org.",
           "Three inbound channels proven: raw curl, a mock-EMR sender, and the HAPI TestPanel sender.",
           "Clean working app `hl7-orm-demo` is wizard-created on purpose — the wizard writes the client secret in a way the CLI blocks.",
         ],
         testPlan: [
-          "Send the same ORM message over all three channels; assert one CSR + Patient per message.",
-          "Validate HL7 endpoint testing against the live listener before enablement.",
+          "Send the same order over all three channels; assert one CSR + Patient per message.",
+          "Validate endpoint testing against the live listener before enablement.",
           "Do not run `application:modify` against the working connector — it strips config.",
         ],
         setup: ["App `hl7-orm-demo`, CloudHub (shard -4), org 239. Keep the wizard-generated secret untouched."],
@@ -183,13 +183,13 @@ const AREAS = [
         links: [],
       },
       {
-        title: "SourceChannel mapping & HL7 OAuth authentication",
+        title: "SourceChannel mapping & OAuth authentication",
         status: "Fixed",
         summary:
-          "Fixed the missing SourceChannel mapping on inbound HL7 (a PUT that never executed) and moved the listener auth to OAuth, with the login flow documented.",
+          "Fixed the missing SourceChannel mapping on inbound orders (a PUT that never executed) and moved the listener auth to OAuth, with the login flow documented.",
         tags: ["OAuth", "SourceChannel", "Idempotency"],
         lld: [
-          "Inbound HL7 → SourceChannel mapping was missing because a PUT call never executed; fixed so the channel is set on the created record.",
+          "Inbound order → SourceChannel mapping was missing because a PUT call never executed; fixed so the channel is set on the created record.",
           "SourceChannel write needs API v67+, but SOAP `login()` was removed at v65+ — so a basic connection can't do it. Switched to an OAuth connection provider.",
           "Even with a valid token the CSR stays invisible unless the Run-As user holds the `HealthCloudPlatformPsl` (object permsets alone are insufficient).",
           "Idempotency + Source System ID + SourceChannel + payload all tested together as one write path.",
@@ -231,8 +231,8 @@ const AREAS = [
           "End-to-end validation of the connector plus the documentation and enablement guide that let others stand it up.",
         tags: ["E2E", "Docs", "Enablement"],
         lld: [
-          "Ran full E2E validation of the MuleSoft HL7 Referral Connector against a live org.",
-          "Authored the connector documentation and an E2E testing + enablement guide.",
+          "Ran full E2E validation of the MuleSoft referral pipeline against a live org.",
+          "Authored the pipeline documentation and an E2E testing + enablement guide.",
         ],
         testPlan: ["Follow the enablement guide from a clean org and confirm an order flows to a CSR."],
         setup: ["See the enablement guide; HAPI TestPanel under Java 8 for the EMR simulator."],
@@ -425,11 +425,11 @@ const AREAS = [
         links: [],
       },
       {
-        title: "An EHR talking to Health Cloud over HL7",
+        title: "An EHR talking to Health Cloud",
         status: "POC — working",
         summary:
           "Could a real EMR drop an order and have it become a Clinical Service Request with nobody touching the UI? Three independent senders said yes.",
-        tags: ["MuleSoft", "HL7", "Integration"],
+        tags: ["MuleSoft", "ORM", "Integration"],
         lld: [
           "Drove the CloudHub listener from raw curl, a mock EMR, and HAPI TestPanel — three transports, one code path.",
           "Each inbound order created a CSR and Patient with the source channel correctly set.",

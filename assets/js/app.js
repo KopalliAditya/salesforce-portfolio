@@ -1,5 +1,6 @@
 (function () {
   const { PROFILE, STATS, AREAS, ACTIVITY } = window.PORTFOLIO;
+  let STATS_DATA = null; // loaded from assets/data/stats.json
   const view = document.getElementById("view");
   const nav = document.getElementById("nav");
   const mobileNav = document.getElementById("mobile-nav");
@@ -77,48 +78,122 @@
     window.scrollTo(0, 0);
   }
 
+  // tenure "1 yr 5 mo" from an ISO start date
+  function tenure(startISO) {
+    const s = new Date(startISO), n = new Date();
+    let mo = (n.getFullYear() - s.getFullYear()) * 12 + (n.getMonth() - s.getMonth());
+    if (n.getDate() < s.getDate()) mo--;
+    const y = Math.floor(mo / 12), m = mo % 12;
+    return (y ? `${y} yr ` : "") + `${m} mo`;
+  }
+
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function heatmapHTML(calendar) {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const start = new Date(today); start.setDate(start.getDate() - 363);
+    start.setDate(start.getDate() - start.getDay()); // back to Sunday
+    const weeks = []; const cur = new Date(start); let windowTotal = 0;
+    while (cur <= today) {
+      const wk = [];
+      for (let i = 0; i < 7; i++) {
+        const future = cur > today;
+        const ds = ymd(cur);
+        const c = future ? 0 : (calendar[ds] || 0);
+        if (!future) windowTotal += c;
+        wk.push({ ds, c, future });
+        cur.setDate(cur.getDate() + 1);
+      }
+      weeks.push(wk);
+    }
+    const lvl = (c) => (c === 0 ? 0 : c <= 2 ? 1 : c <= 4 ? 2 : c <= 7 ? 3 : 4);
+    const months = weeks
+      .map((wk, i) => {
+        const m = new Date(wk[0].ds + "T00:00:00").getMonth();
+        const prev = i ? new Date(weeks[i - 1][0].ds + "T00:00:00").getMonth() : -1;
+        return `<span>${m !== prev && !wk[0].future ? MON[m] : ""}</span>`;
+      }).join("");
+    const grid = weeks
+      .map((wk) => `<div class="heat-col">${wk
+        .map((d) => `<i class="hc lv${lvl(d.c)}${d.future ? " fut" : ""}"${d.future ? "" : ` title="${d.c} commit${d.c === 1 ? "" : "s"} · ${d.ds}"`}></i>`)
+        .join("")}</div>`).join("");
+    return { html: `<div class="heat-months">${months}</div><div class="heat-grid">${grid}</div>`, windowTotal };
+  }
+
+  function gusGraphHTML(monthly) {
+    const keys = Object.keys(monthly).sort().slice(-18);
+    const max = Math.max(1, ...keys.map((k) => monthly[k]));
+    const bars = keys
+      .map((k) => {
+        const [y, m] = k.split("-");
+        const tick = m === "01" ? y : (+m % 2 ? "" : MON[+m - 1][0]);
+        return `<div class="bar" title="${k}: ${monthly[k]} created">
+          <span style="height:${Math.round((monthly[k] / max) * 100)}%"></span>
+          <em>${tick}</em></div>`;
+      }).join("");
+    return `<div class="bars">${bars}</div>`;
+  }
+
   function renderOverview() {
-    const metrics = STATS.map(
-      (s) => `<div class="metric">
-        <div class="metric-val">${esc(s.value)}</div>
-        <div class="metric-lab">${esc(s.label)}</div>
-        <div class="metric-note">${esc(s.note)}</div>
-      </div>`
-    ).join("");
+    const d = STATS_DATA;
+    const gus = d && d.gus && d.gus.available ? d.gus : null;
+
+    const metricDefs = d
+      ? [
+          { value: String(d.commits.total), label: "Commits", note: Object.entries(d.commits.bySource).filter(([, n]) => n).map(([k, n]) => `${k} ${n}`).join(" · ") },
+          { value: tenure(d.tenureStart), label: "At Salesforce", note: `since ${new Date(d.tenureStart).toLocaleDateString("en-US", { month: "short", year: "numeric" })}` },
+          { value: gus ? String(gus.total) : "173", label: "GUS work items", note: gus ? `${gus.bugs} bugs · ${gus.stories} stories` : "" },
+          { value: gus ? String(gus.closed) : "143", label: "Delivered", note: "closed / fixed" },
+        ]
+      : STATS;
+
+    const metrics = metricDefs
+      .map((s) => `<div class="metric"><div class="metric-val">${esc(s.value)}</div><div class="metric-lab">${esc(s.label)}</div><div class="metric-note">${esc(s.note)}</div></div>`)
+      .join("");
+
+    // commits heatmap
+    let heat = "";
+    if (d && d.commits.calendar) {
+      const h = heatmapHTML(d.commits.calendar);
+      const prNote = d.prs && d.prs.note ? `<span class="hint">${esc(d.prs.note)}</span>` : "";
+      heat = `<section class="panel">
+        <div class="panel-head"><p class="block-label">Commits</p><p class="panel-aside">${h.windowTotal} in the last year</p></div>
+        <p class="block-sub">Salesforce work across git.soma, core, and GitHub. ${prNote}</p>
+        <div class="heat">${h.html}</div>
+        <div class="heat-legend"><span>less</span><i class="hc lv0"></i><i class="hc lv1"></i><i class="hc lv2"></i><i class="hc lv3"></i><i class="hc lv4"></i><span>more</span></div>
+      </section>`;
+    }
+
+    // gus graph
+    let gusGraph = "";
+    if (gus && gus.monthly) {
+      gusGraph = `<section class="panel">
+        <div class="panel-head"><p class="block-label">Work items opened</p><p class="panel-aside">${gus.total} total</p></div>
+        <p class="block-sub">GUS work items by month created.</p>
+        ${gusGraphHTML(gus.monthly)}
+      </section>`;
+    }
 
     const areas = AREAS.filter((a) => a.items.length)
-      .map(
-        (a) => `<button class="area-row" data-go="#/${a.id}">
+      .map((a) => `<button class="area-row" data-go="#/${a.id}">
           <span class="ar-name">${esc(a.label)}</span>
           <span class="ar-count">${a.items.length} ${a.items.length === 1 ? "entry" : "entries"}</span>
           <span class="ar-desc">${esc(a.blurb)}</span>
-        </button>`
-      ).join("");
+        </button>`).join("");
 
-    const max = Math.max(...ACTIVITY.repos.map((r) => r.commits));
-    const act = ACTIVITY.repos
-      .map(
-        (r) => `<li>
-          <span class="act-repo">${esc(r.name)}</span>
-          <span class="act-bar"><span style="width:${Math.round((r.commits / max) * 100)}%"></span></span>
-          <span class="act-num">${r.commits}</span>
-        </li>`
-      ).join("");
+    const stamp = d && d.generated ? `Figures refreshed ${new Date(d.generated).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}.` : "";
 
     render(
-      `<p class="lede">I build the plumbing and the intelligence behind <em>Health Cloud</em> — HL7 and MuleSoft pipelines that move clinical data, the scoring that reads it, and the agents that act on it.</p>
+      `<p class="lede">I build the plumbing and the intelligence behind <em>Health Cloud</em> — MuleSoft pipelines that move clinical data, the scoring that reads it, and the agents that act on it.</p>
 
        <div class="metrics">${metrics}</div>
+       ${heat}
+       ${gusGraph}
 
        <p class="block-label">Where the work lives</p>
-       <p class="block-sub">${AREAS.filter((a) => a.items.length).length} areas, ${AREAS.reduce((n, a) => n + a.items.length, 0)} documented pieces. Open one to read its design, test plan, and setup.</p>
-       <div class="areas-index">${areas}</div>
-
-       <section class="activity">
-         <p class="block-label">Public code</p>
-         <p class="block-sub">${esc(ACTIVITY.note)}</p>
-         <ul class="act-list">${act}</ul>
-       </section>`,
+       <p class="block-sub">${AREAS.filter((a) => a.items.length).length} areas, ${AREAS.reduce((n, a) => n + a.items.length, 0)} documented pieces. Open one to read its design, test plan, and setup. ${stamp}</p>
+       <div class="areas-index">${areas}</div>`,
       "overview"
     );
 
@@ -224,5 +299,9 @@
 
   buildNav();
   window.addEventListener("hashchange", route);
-  route();
+  route(); // render immediately with fallbacks
+  fetch("assets/data/stats.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => { if (data) { STATS_DATA = data; if (!location.hash || /#\/?(overview)?$/.test(location.hash)) route(); } })
+    .catch(() => {});
 })();
