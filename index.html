@@ -3,44 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aditya Kopalli — Salesforce Work Portfolio</title>
-  <meta name="description" content="Portfolio of Salesforce engineering work: Scoring, MuleSoft integration, Agentforce, IAM, and POCs." />
+  <title>Aditya Kopalli — engineering logbook</title>
+  <meta name="description" content="Salesforce engineering work: predictive scoring, HL7/MuleSoft integration, Agentforce, and intelligent appointment management." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <div class="brand">
-        <div class="brand-mark">AK</div>
-        <div class="brand-text">
-          <h1>Aditya Kopalli</h1>
-          <p>Member of Technical Staff · Salesforce · <span class="mono">@akopalli</span></p>
+  <div class="layout">
+    <aside class="rail">
+      <div class="rail-inner">
+        <div class="rail-id">
+          <h1 class="rail-name">Aditya<br />Kopalli</h1>
+          <p class="rail-role" id="rail-role"></p>
+          <p class="rail-bio" id="rail-bio"></p>
+        </div>
+
+        <nav class="rail-nav" id="nav" aria-label="Sections"></nav>
+
+        <div class="rail-foot">
+          <a id="gh-link" href="#" target="_blank" rel="noopener" class="rail-foot-link">github.com/KopalliAditya</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Switch theme">
+            <span class="theme-dot"></span><span id="theme-word">dark</span>
+          </button>
         </div>
       </div>
-      <nav class="top-links">
-        <a id="gh-link" href="#" target="_blank" rel="noopener">GitHub</a>
-        <button id="theme-toggle" class="ghost-btn" aria-label="Toggle theme">◐</button>
-      </nav>
-    </div>
-  </header>
+    </aside>
 
-  <nav class="tabs wrap" id="tabs" role="tablist" aria-label="Portfolio sections"></nav>
+    <main class="content">
+      <div class="content-inner" id="view"></div>
+      <footer class="content-foot">
+        <span>Figures pulled from GUS and GitHub.</span>
+        <span id="gen-date"></span>
+      </footer>
+    </main>
+  </div>
 
-  <main class="wrap" id="view"></main>
-
-  <footer class="site-footer wrap">
-    <p>Built as a living portfolio · data sourced from GUS &amp; GitHub · last generated <span id="gen-date"></span></p>
-  </footer>
-
-  <!-- Detail drawer -->
-  <div class="drawer-overlay" id="drawer-overlay" hidden></div>
-  <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true">
-    <button class="drawer-close" id="drawer-close" aria-label="Close">✕</button>
-    <div class="drawer-body" id="drawer-body"></div>
-  </aside>
+  <!-- mobile section switcher -->
+  <nav class="mobile-bar" id="mobile-nav" aria-label="Sections (mobile)"></nav>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>

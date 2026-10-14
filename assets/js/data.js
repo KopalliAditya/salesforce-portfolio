@@ -445,54 +445,88 @@ const AREAS = [
     label: "POCs",
     icon: "✧",
     blurb:
-      "End-to-end proofs of concept — the demos where several of the pieces above came together into something you could show a stakeholder.",
+      "Exploratory builds that answered a 'can we even do this?' before any of it became roadmap work. Each one got put in front of the team to prove the idea held.",
     items: [
       {
-        title: "CSR predictive scoring, fully closed loop",
+        title: "Referral scoring, demonstrated end to end",
         status: "POC — proven",
         summary:
-          "CSV → CRM → Data Cloud DMO → model → ReferralScore back on the record, demonstrated end to end. (See Scoring for the LLD.)",
-        tags: ["Scoring", "Data Cloud"],
-        lld: ["See the Scoring tab — 'CSR Predictive Scoring — end-to-end closed loop'."],
-        testPlan: ["See Scoring."],
-        setup: ["Orgs csr-scoring-org / csr-scoring-live."],
-        links: [],
+          "The open question was whether an acuity score could travel from raw clinical data all the way back onto the record, live. It can — shown as one unbroken run.",
+        tags: ["Scoring", "Data Cloud", "Live demo"],
+        lld: [
+          "Ran the whole chain in a single sitting: seed clinical data → Data Cloud DMO → model → ReferralScore back on the Clinical Service Request.",
+          "What the demo really proved was that the identity thread holds end to end — the same key survives every hop, so the score lands on the right record and nothing is silently dropped.",
+        ],
+        testPlan: [
+          "Seed a known cohort, run the chain live, and read the score back off the record in the same session.",
+          "Reconcile count-in against count-out at every layer.",
+        ],
+        setup: ["Orgs csr-scoring-org / csr-scoring-live with CSR seed data."],
+        links: [{ label: "W-24493741 · E2E validation", url: "#" }],
       },
       {
-        title: "HL7 ORM → ClinicalServiceRequest via MuleSoft",
+        title: "An EHR talking to Health Cloud over HL7",
         status: "POC — working",
         summary:
-          "A real EMR-style HL7 ORM order flowing through a CloudHub listener into a Health Cloud CSR + Patient, from three different senders.",
-        tags: ["MuleSoft", "HL7", "Health Cloud"],
-        lld: ["See the MuleSoft tab — 'HL7 Referral Listener (ORM)'."],
-        testPlan: ["See MuleSoft."],
-        setup: ["App hl7-orm-demo on CloudHub."],
+          "Could a real EMR drop an order and have it become a Clinical Service Request with nobody touching the UI? Three independent senders said yes.",
+        tags: ["MuleSoft", "HL7", "Integration"],
+        lld: [
+          "Drove the CloudHub listener from raw curl, a mock EMR, and HAPI TestPanel — three transports, one code path.",
+          "Each inbound order created a CSR and Patient with the source channel correctly set.",
+        ],
+        testPlan: [
+          "Send the same order from all three senders and confirm identical records.",
+          "Replay a duplicate and confirm the first record is not mutated.",
+        ],
+        setup: ["App hl7-orm-demo on CloudHub; HAPI TestPanel under Java 8 as the EMR stand-in."],
         links: [],
       },
       {
-        title: "Health Cloud GenUI inside Claude Desktop (HXL)",
+        title: "A Health Cloud patient, rendered inside Claude",
         status: "POC — demo",
         summary:
-          "A live patient-summary widget rendered in Claude Desktop and the HXL playground, backed by real org data over MCP.",
+          "I wanted a live patient tile — real contact, open care gaps and all — to appear inside Claude Desktop. An MCP bridge made it render against the org.",
         tags: ["Agentforce", "GenUI", "MCP"],
-        lld: ["See the Agentforce tab — 'HXL patient summary GenUI widget'."],
-        testPlan: ["See Agentforce."],
-        setup: ["Org hxlDemoOrg; MCP on :8790."],
+        lld: [
+          "Built the c/hcPatientSummary widget and an MCP server that feeds it live org data.",
+          "The tile shows a real contact and their open care-gap tasks, generated straight into the chat surface.",
+        ],
+        testPlan: [
+          "Launch the MCP server, ask for the patient, and confirm the tile renders with current data in both Claude Desktop and the playground.",
+        ],
+        setup: ["Org hxlDemoOrg; MCP server on port 8790."],
         links: [],
       },
       {
-        title: "Zero-credential local GenUI (Mosaic)",
+        title: "Generated UI with no cloud credentials",
         status: "POC — demo",
-        summary: "Text→UI generation with no cloud credentials, shelling out to the local Claude CLI.",
-        tags: ["Applied AI", "GenUI"],
-        lld: ["See the Agentforce tab — 'Mosaic local Claude backend'."],
-        testPlan: ["See Agentforce."],
-        setup: ["Local claude CLI + claudeCli auth mode."],
+        summary:
+          "Text-to-UI normally needs a hosted model and keys. I made the playground generate UI by shelling out to the local Claude CLI instead — nothing to provision before a demo.",
+        tags: ["Applied AI", "GenUI", "Local"],
+        lld: [
+          "Added a claudeCli auth mode that calls the local Claude CLI in place of a hosted endpoint.",
+          "Removes the credential barrier entirely for local demos of text→UI generation.",
+        ],
+        testPlan: ["With no API keys configured, type a prompt and confirm UI is generated via the local CLI."],
+        setup: ["Local claude CLI installed; pick the claudeCli mode in the playground."],
         links: [],
       },
     ],
   },
 ];
 
+/* Honest activity snapshot. Salesforce PRs live on internal GHE (not public);
+ * these are the public github.com repos and their commit counts. */
+const ACTIVITY = {
+  note:
+    "Day-to-day Salesforce engineering lives in internal GitHub (git.soma) and isn't public. Below are my public github.com projects.",
+  repos: [
+    { name: "CompetitiveProgramming", commits: 131 },
+    { name: "FitAI", commits: 20 },
+    { name: "Stock-Suggestion", commits: 8 },
+    { name: "User-Personalized-NewsHub", commits: 7 },
+  ],
+};
+
 /* Expose to app.js */
-window.PORTFOLIO = { PROFILE, STATS, AREAS };
+window.PORTFOLIO = { PROFILE, STATS, AREAS, ACTIVITY };
