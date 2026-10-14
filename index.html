@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Kopalli — Salesforce Work Portfolio</title>
+  <meta name="description" content="Portfolio of Salesforce engineering work: Scoring, MuleSoft integration, Agentforce, IAM, and POCs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="brand-mark">AK</div>
+        <div class="brand-text">
+          <h1>Aditya Kopalli</h1>
+          <p>Member of Technical Staff · Salesforce · <span class="mono">@akopalli</span></p>
+        </div>
+      </div>
+      <nav class="top-links">
+        <a id="gh-link" href="#" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="ghost-btn" aria-label="Toggle theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <nav class="tabs wrap" id="tabs" role="tablist" aria-label="Portfolio sections"></nav>
+
+  <main class="wrap" id="view"></main>
+
+  <footer class="site-footer wrap">
+    <p>Built as a living portfolio · data sourced from GUS &amp; GitHub · last generated <span id="gen-date"></span></p>
+  </footer>
+
+  <!-- Detail drawer -->
+  <div class="drawer-overlay" id="drawer-overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="drawer-close" id="drawer-close" aria-label="Close">✕</button>
+    <div class="drawer-body" id="drawer-body"></div>
+  </aside>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
