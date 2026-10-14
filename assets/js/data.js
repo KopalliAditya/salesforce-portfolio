@@ -58,11 +58,7 @@ const AREAS = [
           "Confirm the trimmed BDT input set still produces the expected score.",
         ],
         setup: ["Install the scoring framework/template; confirm install-time validations pass."],
-        links: [
-          { label: "W-23124188 · design spike", url: "#" },
-          { label: "W-23233207 · design enhancements", url: "#" },
-          { label: "W-22245821 · BDT refactor", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "Patient Access Scoring — Data Kit, DMO setup & install validations",
@@ -80,11 +76,7 @@ const AREAS = [
           "Negative: break a prerequisite and confirm the install-time validation surfaces it.",
         ],
         setup: ["Install the data kit; confirm DMO mapping; run the setup flow end to end."],
-        links: [
-          { label: "W-24198891 · data kit/DMO", url: "#" },
-          { label: "W-24198899 · install validations", url: "#" },
-          { label: "W-24198912 · setup UX", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "CSR Predictive Scoring — end-to-end closed loop",
@@ -107,11 +99,7 @@ const AREAS = [
           "Orgs: `csr-scoring-org` / `csr-scoring-live` (orgfarm) with CSR seed data.",
           "Enable CSR unification in Data Cloud.",
         ],
-        links: [
-          { label: "W-24493741 · E2E validation", url: "#" },
-          { label: "W-23902737 · CSR seed org farm", url: "#" },
-          { label: "W-23902577 · CSR unification in Data Cloud", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "Query Data Cloud DMOs from the sf CLI (/ssot + core token)",
@@ -173,11 +161,7 @@ const AREAS = [
           "Do not run `application:modify` against the working connector — it strips config.",
         ],
         setup: ["App `hl7-orm-demo`, CloudHub (shard -4), org 239. Keep the wizard-generated secret untouched."],
-        links: [
-          { label: "W-22183685 · ORM → CSR + Patient", url: "#" },
-          { label: "W-22437560 · validate HL7 endpoint", url: "#" },
-          { label: "W-22437251 · package & deploy", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "ORM de-duplication (RF blocker)",
@@ -196,7 +180,7 @@ const AREAS = [
           "Verify external-id uniqueness on the target field before relying on upsert dedup.",
         ],
         setup: ["Blanket OK to auto-publish TEST iterations for this work; prod patch still needs approval."],
-        links: [{ label: "W-23679333 · duplicate placer order blocker", url: "#" }],
+        links: [],
       },
       {
         title: "SourceChannel mapping & HL7 OAuth authentication",
@@ -218,11 +202,7 @@ const AREAS = [
         setup: [
           "OAuth connected app for the integration user; Run-As user holds HealthCloudPlatformPsl.",
         ],
-        links: [
-          { label: "W-23940979 · SourceChannel PUT fix", url: "#" },
-          { label: "W-24075558 · HL7 OAuth auth & login docs", url: "#" },
-          { label: "W-23196680 · idempotency & payload testing", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "Wizard secret handling & groupId hardcoding",
@@ -242,10 +222,7 @@ const AREAS = [
           "Confirm custom.json resolves `${ASSETGROUPID}` and deploys to a second org unchanged.",
         ],
         setup: ["Match the prefix convention to the deploy path; pass `-Dglobal.anypoint.groupId=<orgId>` on mvn deploy."],
-        links: [
-          { label: "W-24254561 · groupId hardcode", url: "#" },
-          { label: "W-23447304 · simplify wizard to user/pass", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "E2E validation, docs & enablement guide",
@@ -259,11 +236,7 @@ const AREAS = [
         ],
         testPlan: ["Follow the enablement guide from a clean org and confirm an order flows to a CSR."],
         setup: ["See the enablement guide; HAPI TestPanel under Java 8 for the EMR simulator."],
-        links: [
-          { label: "W-22694643 · E2E validation", url: "#" },
-          { label: "W-22899957 · E2E testing & enablement guide", url: "#" },
-          { label: "W-22694635 · connector documentation", url: "#" },
-        ],
+        links: [],
       },
       {
         title: "Mule runtime, module & tooling field notes",
@@ -292,21 +265,39 @@ const AREAS = [
     label: "Agentforce",
     icon: "✦",
     blurb:
-      "Agentforce agents and the applied-AI prototypes around them — a Health Cloud domain-expert agent, metadata-based agent deployment, GenUI widgets in Claude Desktop, and a zero-credential local Claude backend.",
+      "Agentforce agents and action templates — a Member action template for the Payer Contact Center, a Health Cloud domain-expert agent, and metadata-based agent deployment.",
     items: [
       {
-        title: "Health Cloud skills & HC Domain Expert agent (EngOS)",
+        title: "Member Coverage action template (Payer Contact Center)",
         status: "Fixed",
         summary:
-          "Built Health Cloud skills and a Health Cloud Domain Expert agent for the internal EngOS program.",
-        tags: ["Agentforce", "EngOS", "Skills"],
+          "Contributed to the Member agent action template — the Member Coverage template — used in the Payer Contact Center (PCC) Agentforce experience.",
+        tags: ["Agentforce", "PCC", "Action template"],
+        lld: [
+          "Added the Member Coverage action to the Member agent's template so the agent can look up a member's coverage during a contact-center conversation.",
+          "Delivered as part of the Payer Contact Center (PCC) agent action template set.",
+        ],
+        testPlan: [
+          "Invoke the Member Coverage action in the PCC Member agent and confirm it returns the member's coverage.",
+          "Confirm the action is wired into the template and selectable in the agent builder.",
+        ],
+        setup: ["Payer Contact Center enabled org with the Member agent and its action templates."],
+        links: [],
+      },
+      {
+        title: "Health Cloud skills & HC Domain Expert agent (EngOS)",
+        status: "External contribution",
+        summary:
+          "Built Health Cloud skills and a Health Cloud Domain Expert agent, contributed to the internal EngOS repository (outside the Health Cloud codebase).",
+        tags: ["Agentforce", "EngOS", "Skills", "External repo"],
         lld: [
           "Authored a set of Health Cloud skills and packaged them into a domain-expert agent.",
-          "Agent answers HC data-model, flow, and platform questions grounded in the skills.",
+          "The agent answers HC data-model, flow, and platform questions grounded in the skills.",
+          "Shipped as a contribution to the shared EngOS repo, not a Health Cloud team repo.",
         ],
         testPlan: ["Pose representative HC questions; confirm the agent routes to the right skill and answers correctly."],
         setup: ["Register skills with the agent; deploy via EngOS tooling."],
-        links: [{ label: "W-23090115 · HC skills + domain expert agent", url: "#" }],
+        links: [],
       },
       {
         title: "Deploy an Agentforce agent as metadata",
@@ -323,37 +314,6 @@ const AREAS = [
           "Smoke-test the agent responds in the org.",
         ],
         setup: ["Author the four metadata types; deploy in order via sf CLI."],
-        links: [],
-      },
-      {
-        title: "HXL — Health Cloud patient summary GenUI widget",
-        status: "Demo",
-        summary:
-          "A `c/hcPatientSummary` LWC that renders a live Health Cloud patient tile inside Claude Desktop and the HXL playground, pulling real org data through an MCP server.",
-        tags: ["HXL", "GenUI", "LWC", "MCP", "Health Cloud"],
-        lld: [
-          "Widget `c/hcPatientSummary` renders a patient tile; data pulled live from the org (Carole White Contact + care-gap Tasks).",
-          "An MCP server (port 8790) bridges Claude Desktop / the playground to the org.",
-        ],
-        testPlan: [
-          "Relaunch MCP on :8790; confirm the widget renders with live data in both Claude Desktop and the playground.",
-          "Verify care-gap Tasks surface on the tile.",
-        ],
-        setup: ["Org `hxlDemoOrg`; MCP server on :8790; follow the relaunch + demo script."],
-        links: [],
-      },
-      {
-        title: "Mosaic — zero-credential local Claude backend for GenUI",
-        status: "Demo",
-        summary:
-          "Made the HXL playground's text→UI GenUI work with no cloud credentials by shelling out to the local `claude` CLI via a new `claudeCli` auth mode.",
-        tags: ["Applied AI", "GenUI", "Local LLM"],
-        lld: [
-          "Added a `claudeCli` auth mode that invokes the local `claude` CLI instead of a hosted model endpoint.",
-          "Removes the credential requirement entirely for local demos of text→UI generation.",
-        ],
-        testPlan: ["With no API creds configured, enter a text prompt and confirm UI is generated via the local CLI."],
-        setup: ["Local `claude` CLI installed; select the `claudeCli` auth mode in the playground."],
         links: [],
       },
     ],
@@ -462,7 +422,7 @@ const AREAS = [
           "Reconcile count-in against count-out at every layer.",
         ],
         setup: ["Orgs csr-scoring-org / csr-scoring-live with CSR seed data."],
-        links: [{ label: "W-24493741 · E2E validation", url: "#" }],
+        links: [],
       },
       {
         title: "An EHR talking to Health Cloud over HL7",
@@ -482,33 +442,36 @@ const AREAS = [
         links: [],
       },
       {
-        title: "A Health Cloud patient, rendered inside Claude",
+        title: "ClaudeForce",
         status: "POC — demo",
         summary:
-          "I wanted a live patient tile — real contact, open care gaps and all — to appear inside Claude Desktop. An MCP bridge made it render against the org.",
-        tags: ["Agentforce", "GenUI", "MCP"],
+          "Live Health Cloud data rendered as generated UI inside Claude — a real patient tile in Claude Desktop and the playground — with a zero-credential local backend so it runs with nothing to provision.",
+        tags: ["GenUI", "MCP", "Claude"],
         lld: [
-          "Built the c/hcPatientSummary widget and an MCP server that feeds it live org data.",
-          "The tile shows a real contact and their open care-gap tasks, generated straight into the chat surface.",
+          "Built the c/hcPatientSummary widget plus an MCP server (port 8790) that feeds it live org data — a real contact and their open care-gap tasks, rendered straight into the Claude surface.",
+          "Added a claudeCli auth mode so the playground generates UI by shelling out to the local Claude CLI instead of a hosted model — zero credentials to demo.",
         ],
         testPlan: [
-          "Launch the MCP server, ask for the patient, and confirm the tile renders with current data in both Claude Desktop and the playground.",
+          "Launch the MCP server and confirm the patient tile renders with current data in both Claude Desktop and the playground.",
+          "With no API keys configured, type a prompt and confirm UI still generates via the local CLI.",
         ],
-        setup: ["Org hxlDemoOrg; MCP server on port 8790."],
+        setup: ["Org hxlDemoOrg; MCP server on port 8790; local claude CLI with the claudeCli mode."],
         links: [],
       },
       {
-        title: "Generated UI with no cloud credentials",
+        title: "Coworker agent running Provider Search",
         status: "POC — demo",
         summary:
-          "Text-to-UI normally needs a hosted model and keys. I made the playground generate UI by shelling out to the local Claude CLI instead — nothing to provision before a demo.",
-        tags: ["Applied AI", "GenUI", "Local"],
+          "A Health Cloud coworker agent that performs provider search on the user's behalf — proving an Agentforce coworker can drive the Provider Search flow end to end, not just a person clicking through the UI.",
+        tags: ["Agentforce", "Coworker", "Provider Search"],
         lld: [
-          "Added a claudeCli auth mode that calls the local Claude CLI in place of a hosted endpoint.",
-          "Removes the credential barrier entirely for local demos of text→UI generation.",
+          "Wired an Agentforce coworker agent to the Provider Search capability so a natural-language request returns matching providers.",
+          "The agent handles the search flow itself rather than a user navigating the screens.",
         ],
-        testPlan: ["With no API keys configured, type a prompt and confirm UI is generated via the local CLI."],
-        setup: ["Local claude CLI installed; pick the claudeCli mode in the playground."],
+        testPlan: [
+          "Ask the coworker agent to find providers matching a set of criteria and confirm it returns the expected results.",
+        ],
+        setup: ["Health Cloud org with Provider Search configured and the coworker agent enabled."],
         links: [],
       },
     ],

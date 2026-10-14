@@ -32,7 +32,7 @@
   function statusClass(st) {
     const s = st.toLowerCase();
     if (/(demo)/.test(s)) return "st-demo";
-    if (/(document|approved)/.test(s)) return "st-note";
+    if (/(document|approved|external)/.test(s)) return "st-note";
     return "st-live";
   }
 
