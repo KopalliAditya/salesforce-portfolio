@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-19T16:28:41.407Z",
+  "generated": "2026-10-20T16:45:34.631Z",
   "tenureStart": "2025-05-07",
   "commits": {
     "total": 0,
@@ -10,33 +10,9 @@
   "prs": {
     "total": 0,
     "byHost": {},
-    "note": ""
+    "note": "PRs from github.com, git.soma.salesforce.com, gitcore.soma.salesforce.com need a fresh token (gh auth refresh -h <host>)."
   },
   "gus": {
-    "available": true,
-    "total": 183,
-    "closed": 145,
-    "bugs": 89,
-    "stories": 94,
-    "monthly": {
-      "2025-05": 8,
-      "2025-06": 11,
-      "2025-07": 12,
-      "2025-08": 4,
-      "2025-09": 6,
-      "2025-10": 9,
-      "2025-11": 11,
-      "2025-12": 12,
-      "2026-01": 8,
-      "2026-02": 9,
-      "2026-03": 8,
-      "2026-04": 6,
-      "2026-05": 24,
-      "2026-06": 9,
-      "2026-07": 7,
-      "2026-08": 10,
-      "2026-09": 9,
-      "2026-10": 20
-    }
+    "available": false
   }
 }
